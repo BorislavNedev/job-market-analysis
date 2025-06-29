@@ -70,6 +70,42 @@ elif section == "Salary Analysis":
                       title="Top 10 Locations by Average Salary")
         st.plotly_chart(fig3)
 
+        # 5. Average Salary by Job Title (Top 10)
+        st.subheader("🧠 Average Salary by Job Title (Top 10)")
+        top_titles = salary_df["Job Title"].value_counts().head(10).index.tolist()
+        top_titles_df = salary_df[salary_df["Job Title"].isin(top_titles)]
+        job_salary = top_titles_df.groupby("Job Title")["avg_salary"].mean().sort_values(ascending=True)
+
+        fig4 = px.bar(job_salary, x=job_salary.values, y=job_salary.index,
+                      orientation='h', labels={"x": "Average Salary", "y": "Job Title"},
+                      title="Top 10 Job Titles by Average Salary")
+        st.plotly_chart(fig4)
+
+        # 6. Top Paying Job Titles
+        st.subheader("💸 Top Paying Job Titles")
+
+        top_titles = (
+            salary_df.groupby("Job Title")["avg_salary"]
+            .mean()
+            .sort_values(ascending=False)
+            .head(10)
+            .reset_index()
+        )
+
+        fig6 = px.bar(
+            top_titles,
+            x="avg_salary",
+            y="Job Title",
+            orientation="h",
+            title="Top 10 Job Titles by Average Salary",
+            labels={"avg_salary": "Average Salary", "Job Title": "Job Title"},
+            color="avg_salary",
+            color_continuous_scale="viridis"
+        )
+
+        fig6.update_layout(yaxis=dict(autorange="reversed"))  # Highest salary on top
+        st.plotly_chart(fig6)
+
 elif section == "Job Distribution":
     st.subheader("🌍 Job Distribution by Location")
     st.write("(Add location-based charts here)")
