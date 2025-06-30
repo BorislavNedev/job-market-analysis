@@ -107,8 +107,57 @@ elif section == "Salary Analysis":
         st.plotly_chart(fig6)
 
 elif section == "Job Distribution":
-    st.subheader("🌍 Job Distribution by Location")
-    st.write("(Add location-based charts here)")
+    # 1. Job Distribution by Location
+    st.subheader("📍 Job Distribution by Location")
+
+    location_counts = df["Location"].value_counts().head(10).reset_index()
+    location_counts.columns = ["Location", "Job Count"]
+
+    fig7 = px.bar(
+        location_counts,
+        x="Location",
+        y="Job Count",
+        title="Top 10 Locations by Job Count",
+        color="Job Count",
+        color_continuous_scale="blues"
+    )
+    st.plotly_chart(fig7)
+
+    # 2. Most Common Job Titles
+    st.subheader("🧑‍💼 Most Common Job Titles")
+
+    title_counts = df["Job Title"].value_counts().head(10).reset_index()
+    title_counts.columns = ["Job Title", "Count"]
+
+    fig8 = px.bar(
+        title_counts,
+        x="Count",
+        y="Job Title",
+        orientation="h",
+        title="Top 10 Job Titles",
+        color="Count",
+        color_continuous_scale="greens"
+    )
+    fig8.update_layout(yaxis=dict(autorange="reversed"))
+    st.plotly_chart(fig8)
+
+    # 3. Job Type Distribution
+    st.subheader("🌎 Job Type Distribution")
+
+    if "Job Type" in df.columns:
+        job_type_counts = df["Job Type"].value_counts().reset_index()
+        job_type_counts.columns = ["Job Type", "Count"]
+
+        fig9 = px.pie(
+            job_type_counts,
+            names="Job Type",
+            values="Count",
+            title="Distribution of Job Types",
+            color_discrete_sequence=px.colors.sequential.RdBu
+        )
+        st.plotly_chart(fig9)
+    else:
+        st.info("Job Type information not available.")
 
 # -----------------------------
 # 📌 Footer
